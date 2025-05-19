@@ -8,16 +8,19 @@ import (
 )
 
 func NewErr(fileName string, level logrus.Level, err error) (*logrus.Logger, error) {
-	if err != nil {
-		logger := logrus.New()
-		logger.SetLevel(level)
-		logger.SetFormatter(&logrus.JSONFormatter{})
-		fileOut, fileErr := os.OpenFile(fmt.Sprintf("%s.log", fileName), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-		if fileErr != nil {
-			panic(err)
-		}
+	logger := logrus.New()
+	logger.SetLevel(level)
+	logger.SetFormatter(&logrus.JSONFormatter{})
 
-		logger.SetOutput(fileOut)
+	fileOut, fileErr := os.OpenFile(fmt.Sprintf("%s.log", fileName), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if fileErr != nil {
+		fmt.Println("Gagal buka file log:", fileErr)
+		return nil, fileErr
+	}
+
+	logger.SetOutput(fileOut)
+
+	if err != nil {
 		switch level {
 		case logrus.DebugLevel:
 			logger.Debug(err.Error())
@@ -31,9 +34,20 @@ func NewErr(fileName string, level logrus.Level, err error) (*logrus.Logger, err
 			logger.Fatal(err.Error())
 		case logrus.PanicLevel:
 			logger.Panic(err.Error())
+		default:
+			logger.Error(err.Error())
 		}
-		return logger, fileErr
-	} else {
-		return nil, nil
+		return logger, nil
 	}
+
+	switch level {
+	case logrus.InfoLevel:
+		logger.Info("Info: operasi berhasil")
+	case logrus.DebugLevel:
+		logger.Debug("Debug: operasi berhasil")
+	case logrus.TraceLevel:
+		logger.Trace("Trace: operasi berhasil")
+	}
+
+	return logger, nil
 }

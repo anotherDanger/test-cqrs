@@ -26,21 +26,23 @@ func (repo *CommandRepositoryImpl) AddBook(ctx context.Context, tx *sql.Tx, enti
 	entity.Id = id
 	_, err := tx.ExecContext(ctx, query, id, entity.Author, entity.Title, entity.Genre)
 	if err != nil {
-		helpers.NewErr("../logs/commandrepository", logrus.ErrorLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandRepository", logrus.ErrorLevel, err)
 		return nil, err
 	}
 
 	reqBody, err := json.Marshal(entity)
 	if err != nil {
-		helpers.NewErr("../logs/commandrepository", logrus.FatalLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandRepository", logrus.FatalLevel, err)
 		return nil, err
 	}
 
 	_, err = http.Post(fmt.Sprintf("http://localhost:9200/books/_create/%s", id), "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		helpers.NewErr("../logs/commandrepository", logrus.FatalLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandRepository", logrus.FatalLevel, err)
 		return nil, err
 	}
+
+	helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandRepository", logrus.InfoLevel, nil)
 
 	return entity, nil
 

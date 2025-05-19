@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	helpers "test-cqrs/src/App/Helpers"
 	commandservice "test-cqrs/src/App/Service/CommandService"
@@ -17,24 +18,32 @@ type ControllerImpl struct {
 }
 
 func NewControllerImpl(svc commandservice.CommandService) Controller {
-	return &ControllerImpl{}
+	return &ControllerImpl{
+		svc: svc,
+	}
 }
 
 func (ctrl *ControllerImpl) AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	reqBody := &domain.Domain{}
 
+	if reqBody.Author == "" || reqBody.Title == "" || reqBody.Genre == "" {
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, errors.New("body is empty"))
+		w.WriteHeader(400)
+		return
+	}
+
 	json.NewDecoder(r.Body).Decode(reqBody)
 
 	entity, err := ctrl.svc.AddBook(r.Context(), reqBody)
 	if err != nil {
-		helpers.NewErr("../logs/controller", logrus.ErrorLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, err)
 		return
 	}
 
-	response := webapi.Response[domain.Domain]{
+	response := webapi.Response[*domain.Domain]{
 		Code:   201,
 		Status: "OK",
-		Data:   *entity,
+		Data:   entity,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

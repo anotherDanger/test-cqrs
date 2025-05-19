@@ -16,19 +16,22 @@ type CommandServiceImpl struct {
 }
 
 func NewCommandServiceImpl(tx *sql.DB, repo commandrepository.CommandRepository) CommandService {
-	return &CommandServiceImpl{}
+	return &CommandServiceImpl{
+		tx:   tx,
+		repo: repo,
+	}
 }
 
 func (svc *CommandServiceImpl) AddBook(ctx context.Context, entity *domain.Domain) (*domain.Domain, error) {
 	tx, err := svc.tx.Begin()
 	if err != nil {
-		helpers.NewErr("../commandservice", logrus.ErrorLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandService", logrus.ErrorLevel, err)
 		return nil, err
 	}
 
 	result, err := svc.repo.AddBook(ctx, tx, entity)
 	if err != nil {
-		helpers.NewErr("../commandservice", logrus.ErrorLevel, err)
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/commandService", logrus.ErrorLevel, err)
 		return nil, err
 	}
 
