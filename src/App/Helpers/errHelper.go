@@ -18,6 +18,20 @@ func NewErr(fileName string, level logrus.Level, err error) (*logrus.Logger, err
 		}
 
 		logger.SetOutput(fileOut)
+		switch level {
+		case logrus.DebugLevel:
+			logger.Debug(err.Error())
+		case logrus.InfoLevel:
+			logger.Info(err.Error())
+		case logrus.WarnLevel:
+			logger.Warn(err.Error())
+		case logrus.ErrorLevel:
+			logger.Error(err.Error())
+		case logrus.FatalLevel:
+			logger.Fatal(err.Error())
+		case logrus.PanicLevel:
+			logger.Panic(err.Error())
+		}
 		return logger, fileErr
 	} else {
 		return nil, nil
