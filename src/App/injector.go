@@ -5,7 +5,7 @@ package main
 
 import (
 	"net/http"
-	controllers "test-cqrs/src/App/Controllers"
+	commandcontroller "test-cqrs/src/App/Controllers/CommandController"
 	helpers "test-cqrs/src/App/Helpers"
 	commandrepository "test-cqrs/src/App/Repository/CommandRepository"
 	commandservice "test-cqrs/src/App/Service/CommandService"
@@ -17,7 +17,7 @@ import (
 var NewSet = wire.NewSet(
 	commandrepository.NewCommandRepositoryImpl,
 	commandservice.NewCommandServiceImpl,
-	controllers.NewControllerImpl,
+	commandcontroller.NewCommandControllerImpl,
 	helpers.NewDb,
 	NewRouter, wire.Bind(new(http.Handler), new(*httprouter.Router)),
 	NewServer,

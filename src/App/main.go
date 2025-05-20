@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
-	controllers "test-cqrs/src/App/Controllers"
+	commandcontroller "test-cqrs/src/App/Controllers/CommandController"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func NewRouter(ctrl controllers.Controller) *httprouter.Router {
+func NewRouter(ctrl commandcontroller.CommandController) *httprouter.Router {
 	r := httprouter.New()
 	r.POST("/v1/books", ctrl.AddBook)
 	return r

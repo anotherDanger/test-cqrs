@@ -1,4 +1,4 @@
-package controllers
+package commandcontroller
 
 import (
 	"net/http"
@@ -6,6 +6,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type Controller interface {
+type CommandController interface {
 	AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/google/wire"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"test-cqrs/src/App/Controllers"
+	"test-cqrs/src/App/Controllers/CommandController"
 	"test-cqrs/src/App/Helpers"
 	"test-cqrs/src/App/Repository/CommandRepository"
 	"test-cqrs/src/App/Service/CommandService"
@@ -25,8 +25,8 @@ func InitServer() (*http.Server, func(), error) {
 	}
 	commandRepository := commandrepository.NewCommandRepositoryImpl()
 	commandService := commandservice.NewCommandServiceImpl(db, commandRepository)
-	controller := controllers.NewControllerImpl(commandService)
-	router := NewRouter(controller)
+	commandController := commandcontroller.NewCommandControllerImpl(commandService)
+	router := NewRouter(commandController)
 	server := NewServer(router)
 	return server, func() {
 		cleanup()
@@ -35,4 +35,4 @@ func InitServer() (*http.Server, func(), error) {
 
 // injector.go:
 
-var NewSet = wire.NewSet(commandrepository.NewCommandRepositoryImpl, commandservice.NewCommandServiceImpl, controllers.NewControllerImpl, helpers.NewDb, NewRouter, wire.Bind(new(http.Handler), new(*httprouter.Router)), NewServer)
+var NewSet = wire.NewSet(commandrepository.NewCommandRepositoryImpl, commandservice.NewCommandServiceImpl, commandcontroller.NewCommandControllerImpl, helpers.NewDb, NewRouter, wire.Bind(new(http.Handler), new(*httprouter.Router)), NewServer)

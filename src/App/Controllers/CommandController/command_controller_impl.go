@@ -1,4 +1,4 @@
-package controllers
+package commandcontroller
 
 import (
 	"encoding/json"
@@ -13,17 +13,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ControllerImpl struct {
+type CommandControllerImpl struct {
 	svc commandservice.CommandService
 }
 
-func NewControllerImpl(svc commandservice.CommandService) Controller {
-	return &ControllerImpl{
+func NewCommandControllerImpl(svc commandservice.CommandService) CommandController {
+	return &CommandControllerImpl{
 		svc: svc,
 	}
 }
 
-func (ctrl *ControllerImpl) AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (ctrl *CommandControllerImpl) AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	reqBody := &domain.Domain{}
 
 	if reqBody.Author == "" || reqBody.Title == "" || reqBody.Genre == "" {
