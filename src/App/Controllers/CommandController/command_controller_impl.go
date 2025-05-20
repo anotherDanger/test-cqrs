@@ -2,7 +2,7 @@ package commandcontroller
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
 	helpers "test-cqrs/src/App/Helpers"
 	commandservice "test-cqrs/src/App/Service/CommandService"
@@ -26,12 +26,13 @@ func NewCommandControllerImpl(svc commandservice.CommandService) CommandControll
 func (ctrl *CommandControllerImpl) AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	reqBody := &domain.Domain{}
 
-	if reqBody.Author == "" || reqBody.Title == "" || reqBody.Genre == "" {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, errors.New("body is empty"))
-		w.WriteHeader(400)
-		return
-	}
-
+	// if reqBody.Author == "" || reqBody.Title == "" || reqBody.Genre == "" {
+	// 	helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, errors.New("body is empty"))
+	// 	fmt.Println(reqBody.Author, reqBody.Title, reqBody.Genre)
+	// 	w.WriteHeader(400)
+	// 	return
+	// }
+	fmt.Println(reqBody.Author, reqBody.Title, reqBody.Genre)
 	json.NewDecoder(r.Body).Decode(reqBody)
 
 	entity, err := ctrl.svc.AddBook(r.Context(), reqBody)

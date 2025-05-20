@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	commandcontroller "test-cqrs/src/App/Controllers/CommandController"
+	querycontroller "test-cqrs/src/App/Controllers/QueryController"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func NewRouter(ctrl commandcontroller.CommandController) *httprouter.Router {
+func NewRouter(c_ctrl commandcontroller.CommandController, q_ctrl querycontroller.QueryController) *httprouter.Router {
 	r := httprouter.New()
-	r.POST("/v1/books", ctrl.AddBook)
+	r.POST("/v1/books", c_ctrl.AddBook)
+	r.POST("/v1/books/search/:search", q_ctrl.GetBook)
 	return r
 }
 
