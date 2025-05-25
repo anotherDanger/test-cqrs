@@ -2,6 +2,7 @@ package commandservice
 
 import (
 	"context"
+	"errors"
 	"test-cqrs/src/App/Service/CommandService/mocks"
 	domain "test-cqrs/src/Domain"
 	"testing"
@@ -46,4 +47,107 @@ func TestCommandAddBookSuccess(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
+}
+
+func TestCommandAddBookFailedAllEmpty(t *testing.T) {
+	_, db, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	db.ExpectBegin()
+	svc := mocks.NewCommandService(t)
+
+	svc.On("AddBook", mock.Anything, mock.Anything).Return(nil, errors.New("body cannot empty"))
+	db.ExpectRollback()
+	_, err = svc.AddBook(context.Background(), nil)
+	if err == nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, "body cannot empty", err.Error())
+}
+
+func TestCommandBookFailedIdEmpty(t *testing.T) {
+	_, db, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	input := &domain.Domain{
+		Author: "Tester 1",
+		Title:  "Test 1",
+		Genre:  "Testing 1",
+	}
+
+	db.ExpectBegin()
+
+	svc := mocks.NewCommandService(t)
+	svc.On("AddBook", mock.Anything, mock.Anything).Return(nil, errors.New("id cannot empty"))
+
+	_, err = svc.AddBook(context.Background(), input)
+
+	db.ExpectRollback()
+
+	assert.Equal(t, "id cannot empty", err.Error())
+}
+
+func TestCommandBookFailedAuthorEmpty(t *testing.T) {
+	_, db, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	input := &domain.Domain{
+		Title: "Test 1",
+		Genre: "Testing 1",
+	}
+
+	db.ExpectBegin()
+	svc := mocks.NewCommandService(t)
+	svc.On("AddBook", mock.Anything, mock.Anything).Return(nil, errors.New("author cannot empty"))
+	_, err = svc.AddBook(context.Background(), input)
+	db.ExpectRollback()
+
+	assert.Equal(t, errors.New("author cannot empty"), err)
+}
+
+func TestCommandBookFailedTitleEmpty(t *testing.T) {
+	_, db, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	input := &domain.Domain{
+		Author: "Tester 1",
+		Genre:  "Testing",
+	}
+
+	db.ExpectBegin()
+	svc := mocks.NewCommandService(t)
+	svc.On("AddBook", mock.Anything, mock.Anything).Return(nil, errors.New("title cannot empty"))
+	_, err = svc.AddBook(context.Background(), input)
+	db.ExpectRollback()
+
+	assert.Equal(t, errors.New("title cannot empty"), err)
+}
+
+func TestCommandFailedGenreEmpty(t *testing.T) {
+	_, db, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	input := &domain.Domain{
+		Author: "Tester 1",
+		Title:  "Test 1",
+	}
+
+	db.ExpectBegin()
+	svc := mocks.NewCommandService(t)
+	svc.On("AddBook", mock.Anything, mock.Anything).Return(nil, errors.New("genre cannot empty"))
+	_, err = svc.AddBook(context.Background(), input)
+	db.ExpectRollback()
+
+	assert.Equal(t, errors.New("genre cannot empty"), err)
 }
