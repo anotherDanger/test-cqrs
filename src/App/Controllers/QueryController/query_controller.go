@@ -8,4 +8,5 @@ import (
 
 type QueryController interface {
 	GetBook(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	GetBookByTitle(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }

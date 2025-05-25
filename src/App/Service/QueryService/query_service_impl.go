@@ -28,3 +28,13 @@ func (svc *QueryServiceImpl) GetBook(ctx context.Context, params string) ([]*dom
 
 	return result, nil
 }
+
+func (svc *QueryServiceImpl) GetBookByTitle(ctx context.Context, title string) ([]*domain.Domain, error) {
+	result, err := svc.repo.GetBookByTitle(ctx, title)
+	if err != nil {
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryservice", logrus.ErrorLevel, err)
+		return nil, err
+	}
+
+	return result, nil
+}

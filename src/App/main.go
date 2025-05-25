@@ -13,6 +13,8 @@ func NewRouter(c_ctrl commandcontroller.CommandController, q_ctrl querycontrolle
 	r := httprouter.New()
 	r.POST("/v1/books", c_ctrl.AddBook)
 	r.POST("/v1/books/search/:search", q_ctrl.GetBook)
+	r.POST("/v1/books/title/:search", q_ctrl.GetBookByTitle)
+
 	return r
 }
 

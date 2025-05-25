@@ -41,3 +41,23 @@ func (ctrl *QueryControllerImpl) GetBook(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(response)
 }
+
+func (ctrl *QueryControllerImpl) GetBookByTitle(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	title := p.ByName("search")
+
+	result, err := ctrl.svc.GetBookByTitle(r.Context(), title)
+	if err != nil {
+		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/querycontroller", logrus.ErrorLevel, err)
+		return
+	}
+
+	response := webapi.Response[[]*domain.Domain]{
+		Code:   200,
+		Status: "Found",
+		Data:   result,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(response)
+}

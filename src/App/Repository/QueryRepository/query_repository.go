@@ -7,4 +7,5 @@ import (
 
 type QueryRepository interface {
 	GetBook(ctx context.Context, params string) ([]*domain.Domain, error)
+	GetBookByTitle(ctx context.Context, title string) ([]*domain.Domain, error)
 }
