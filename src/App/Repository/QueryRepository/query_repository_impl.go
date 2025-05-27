@@ -9,6 +9,7 @@ import (
 	"net/http"
 	helpers "test-cqrs/src/App/Helpers"
 	domain "test-cqrs/src/Domain"
+	webapi "test-cqrs/src/WebApi"
 
 	"github.com/sirupsen/logrus"
 )
@@ -19,15 +20,15 @@ func NewQueryRepositoryImpl() QueryRepository {
 	return &QueryRepositoryImpl{}
 }
 
-func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, params string) ([]*domain.Domain, error) {
+func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, key string, value string) ([]*domain.Domain, error) {
 	rawJson := fmt.Sprintf(
 		`{
 			"query":{
 				"match":{
-					"author": "%s"
+					"%s": "%s"
 				}
 			}
-		}`, params)
+		}`, key, value)
 	response, err := http.Post("http://localhost:9200/books/_search", "application/json", bytes.NewBufferString(rawJson))
 	if err != nil {
 		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryrepository", logrus.ErrorLevel, err)
@@ -38,13 +39,7 @@ func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, params string) ([]
 
 	body, _ := io.ReadAll(response.Body)
 
-	var results struct {
-		Hits struct {
-			Hits []struct {
-				Source domain.Domain `json:"_source"`
-			} `json:"hits"`
-		} `json:"hits"`
-	}
+	var results webapi.ElasticResponse
 
 	err = json.Unmarshal(body, &results)
 	if err != nil {
@@ -56,56 +51,6 @@ func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, params string) ([]
 	for _, hit := range results.Hits.Hits {
 		source = append(source, &hit.Source)
 	}
-	return source, nil
-
-}
-
-func (repo *QueryRepositoryImpl) GetBookByTitle(ctx context.Context, title string) ([]*domain.Domain, error) {
-	reqBody := fmt.Sprintf(
-		`{
-			"query":{
-				"bool":{
-					"must":[
-						{
-							"match":{
-								"title": "%s"
-							}
-						}
-					]
-				}
-			}
-		}`, title)
-
-	response, err := http.Post("http://localhost:9200/books/_search", "application/json", bytes.NewBufferString(reqBody))
-	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryrepository", logrus.ErrorLevel, err)
-		return nil, err
-	}
-
-	var results struct {
-		Hits struct {
-			Hits []struct {
-				Source domain.Domain `json:"_source"`
-			} `json:"hits"`
-		} `json:"hits"`
-	}
-
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryrepository", logrus.ErrorLevel, err)
-		return nil, err
-	}
-	json.Unmarshal(body, &results)
-
-	var source []*domain.Domain
-	for _, hits := range results.Hits.Hits {
-		source = append(source, &hits.Source)
-	}
-
-	fmt.Println(source)
-
 	return source, nil
 
 }

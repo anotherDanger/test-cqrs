@@ -12,8 +12,7 @@ import (
 func NewRouter(c_ctrl commandcontroller.CommandController, q_ctrl querycontroller.QueryController) *httprouter.Router {
 	r := httprouter.New()
 	r.POST("/v1/books", c_ctrl.AddBook)
-	r.POST("/v1/books/search/:search", q_ctrl.GetBook)
-	r.POST("/v1/books/title/:search", q_ctrl.GetBookByTitle)
+	r.POST("/v1/books/search/:key/:value", q_ctrl.GetBook)
 
 	return r
 }

@@ -23,9 +23,10 @@ func NewQueryControllerImpl(svc queryservice.QueryService) QueryController {
 }
 
 func (ctrl *QueryControllerImpl) GetBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	params := p.ByName("search")
+	key := p.ByName("key")
+	value := p.ByName("value")
 
-	result, err := ctrl.svc.GetBook(r.Context(), params)
+	result, err := ctrl.svc.GetBook(r.Context(), key, value)
 	if err != nil {
 		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/querycontroller", logrus.ErrorLevel, err)
 		return
@@ -34,26 +35,6 @@ func (ctrl *QueryControllerImpl) GetBook(w http.ResponseWriter, r *http.Request,
 	response := webapi.Response[[]*domain.Domain]{
 		Code:   200,
 		Status: "OK",
-		Data:   result,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (ctrl *QueryControllerImpl) GetBookByTitle(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	title := p.ByName("search")
-
-	result, err := ctrl.svc.GetBookByTitle(r.Context(), title)
-	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/querycontroller", logrus.ErrorLevel, err)
-		return
-	}
-
-	response := webapi.Response[[]*domain.Domain]{
-		Code:   200,
-		Status: "Found",
 		Data:   result,
 	}
 
