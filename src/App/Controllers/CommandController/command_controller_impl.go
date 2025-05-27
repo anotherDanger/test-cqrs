@@ -28,19 +28,19 @@ func (ctrl *CommandControllerImpl) AddBook(w http.ResponseWriter, r *http.Reques
 	err := json.NewDecoder(r.Body).Decode(reqBody)
 	if err != nil {
 		w.WriteHeader(400)
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/controller", logrus.ErrorLevel, err)
 		return
 	}
 
 	if reqBody.Author == "" || reqBody.Title == "" || reqBody.Genre == "" {
 		w.WriteHeader(400)
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/controller", logrus.ErrorLevel, err)
 		return
 	}
 
 	entity, err := ctrl.svc.AddBook(r.Context(), reqBody)
 	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/controller", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/controller", logrus.ErrorLevel, err)
 		return
 	}
 

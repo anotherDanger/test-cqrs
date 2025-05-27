@@ -6,16 +6,15 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
 func NewDb() (*sql.DB, func(), error) {
-	err := godotenv.Load("/home/andhikadanger/cqrs/.env")
-	if err != nil {
-		NewErr("../logs/db", logrus.ErrorLevel, err)
-		return nil, nil, err
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	NewErr("/app/src/App/logs/db", logrus.ErrorLevel, err)
+	// 	return nil, nil, err
+	// }
 	db_host := os.Getenv("DB_HOST")
 	db_port := os.Getenv("DB_PORT")
 	db_user := os.Getenv("DB_USER")
@@ -24,7 +23,7 @@ func NewDb() (*sql.DB, func(), error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", db_user, db_pass, db_host, db_port, db_name)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		NewErr("../logs/db", logrus.ErrorLevel, err)
+		NewErr("src/App/logs/db", logrus.ErrorLevel, err)
 		return nil, nil, err
 	}
 

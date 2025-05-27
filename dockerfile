@@ -11,5 +11,6 @@ RUN go build -o main ./src/App
 FROM alpine:latest
 
 COPY --from=builder /app/main .
+COPY --from=builder /app/src/App/logs /app/src/App/logs
 
-CMD [ "main" ]
+CMD [ "./main" ]

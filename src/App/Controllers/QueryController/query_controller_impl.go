@@ -28,7 +28,7 @@ func (ctrl *QueryControllerImpl) GetBook(w http.ResponseWriter, r *http.Request,
 
 	result, err := ctrl.svc.GetBook(r.Context(), key, value)
 	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/querycontroller", logrus.ErrorLevel, err)
+		helpers.NewErr("src/App/logs/controller", logrus.ErrorLevel, err)
 		return
 	}
 

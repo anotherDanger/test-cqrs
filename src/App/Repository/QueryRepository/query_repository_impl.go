@@ -31,7 +31,7 @@ func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, key string, value 
 		}`, key, value)
 	response, err := http.Post("http://localhost:9200/books/_search", "application/json", bytes.NewBufferString(rawJson))
 	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryrepository", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/repository", logrus.ErrorLevel, err)
 		return nil, err
 	}
 
@@ -43,7 +43,7 @@ func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, key string, value 
 
 	err = json.Unmarshal(body, &results)
 	if err != nil {
-		helpers.NewErr("/home/andhikadanger/cqrs/src/App/logs/queryrepository", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/repository", logrus.ErrorLevel, err)
 		return nil, err
 	}
 
