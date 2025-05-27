@@ -19,7 +19,7 @@ func NewRouter(c_ctrl commandcontroller.CommandController, q_ctrl querycontrolle
 
 func NewServer(handler http.Handler) *http.Server {
 	return &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    "0.0.0.0:8080",
 		Handler: handler,
 	}
 }
