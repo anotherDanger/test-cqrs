@@ -22,7 +22,7 @@ func NewQueryServiceImpl(repo queryrepository.QueryRepository) QueryService {
 func (svc *QueryServiceImpl) GetBook(ctx context.Context, key string, params string) ([]*domain.Domain, error) {
 	result, err := svc.repo.GetBook(ctx, key, params)
 	if err != nil {
-		helpers.NewErr("src/App/logs/service", logrus.ErrorLevel, err)
+		helpers.NewErr("/app/src/App/logs/service", logrus.ErrorLevel, err)
 		return nil, err
 	}
 

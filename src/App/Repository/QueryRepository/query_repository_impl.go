@@ -29,7 +29,7 @@ func (repo *QueryRepositoryImpl) GetBook(ctx context.Context, key string, value 
 				}
 			}
 		}`, key, value)
-	response, err := http.Post("http://localhost:9200/books/_search", "application/json", bytes.NewBufferString(rawJson))
+	response, err := http.Post("http://host.docker.internal:9200/books/_search", "application/json", bytes.NewBufferString(rawJson))
 	if err != nil {
 		helpers.NewErr("/app/src/App/logs/repository", logrus.ErrorLevel, err)
 		return nil, err
